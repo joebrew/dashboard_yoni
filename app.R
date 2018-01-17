@@ -14,6 +14,11 @@ sidebar <- dashboardSidebar(
       tabName="main",
       icon=icon("eye")),
     menuItem(
+      text = 'Contact me',
+      tabName = 'contact',
+      icon = icon('pencil')
+    ),
+    menuItem(
       text = 'About',
       tabName = 'about',
       icon = icon("cog", lib = "glyphicon"))
@@ -21,6 +26,7 @@ sidebar <- dashboardSidebar(
 )
 
 body <- dashboardBody(
+  # Use custom css
   tags$head(
     tags$link(rel = "stylesheet", type = "text/css", href = "custom.css")
   ),
@@ -31,7 +37,9 @@ body <- dashboardBody(
         fluidRow(
           column(4, 
                  selectInput("layer", "Choose tile:", choices= c("Esri.OceanBasemap", "Esri.NatGeoWorldMap", "Stamen.Watercolor")),
-                 checkboxInput("showPlaces", "Show Places?", value = FALSE)
+                 checkboxInput("showPlaces", "Show Places?", value = FALSE),
+                 sliderInput('slidey', 'Slide this',
+                             min = 0, max = 100, value = 50)
                  ),
           column(8, leafletOutput("leaf"))
         )
@@ -73,7 +81,8 @@ server <- function(input, output) {
       addPolylines(data=isr)
     
     if(input$showPlaces) {
-      l <- l %>% addMarkers(data = places, popup = places$name)
+      l <- l %>% addCircleMarkers(data = places, popup = places$name,
+                                  color = "green")
     }
     
     l
